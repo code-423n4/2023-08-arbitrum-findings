@@ -38,3 +38,8 @@ Then, this packed value will be compared to `topNomineesPacked[0]`.
 Since `packed > topNomineesPacked[0]` (actually the weight for both is the same 0x03E8, but one has index 6 and the other has index 5), the `topNomineesPacked[0]` will be replaced by the `packed` value.
 
 This shows that in case of equal weights, the index becomes important and effective.
+
+### Q3
+
+During swapping member or rotating member, better to have a check that the address of new member is different from the address of the old member.
+https://github.com/ArbitrumFoundation/governance/blob/c18de53820c505fc459f766c1b224810eaeaabc5/src/security-council-mgmt/SecurityCouncilManager.sol#L218
