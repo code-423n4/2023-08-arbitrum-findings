@@ -82,3 +82,72 @@ index 8ec1308..7287627 100644
          }
          Cohort cohort = _removeMemberFromCohortArray(_addressToRemove);
 ```
+
+## Merge `rotateMember` and `replaceMember` regardless of their semantical difference.
+
+### Summary
+
+Make both functions just one by using a flag as a 3rd parameter to check access control and emit events.
+
+### Description
+
+Because both `rotateMember` and `replaceMember` behave the same but emit a different event and have a different Access Control mechanism it makes sense that both functions are separated. However, both the `MEMBER_REPLACER_ROLE` and `MEMBER_ROTATOR_ROLE` are given to the 9/12 multisig without any further intervention of the user that's rotating their address.
+
+Since both roles are given to the same entity and the events can be selectively emitted, a flag to the `replaceMember` function can be added so that it's the only function exposed, reducing bytecode size.
+
+### Recommendation
+
+Apply the following diff to the SecurityCouncilManager contract:
+
+```diff
+diff --git a/src/security-council-mgmt/SecurityCouncilManager.sol b/src/security-council-mgmt/SecurityCouncilManager.sol
+index 8ec1308..3ebeab1 100644
+--- a/src/security-council-mgmt/SecurityCouncilManager.sol
++++ b/src/security-council-mgmt/SecurityCouncilManager.sol
+@@ -190,29 +190,24 @@ contract SecurityCouncilManager is
+     }
+ 
+     /// @inheritdoc ISecurityCouncilManager
+-    function replaceMember(address _memberToReplace, address _newMember)
+-        external
+-        onlyRole(MEMBER_REPLACER_ROLE)
+-    {
++    function replaceMember(address _memberToReplace, address _newMember, bool rotation) external {
++        _checkRole(rotation ? MEMBER_ROTATOR_ROLE : MEMBER_REPLACER_ROLE, msg.sender);
++
+         Cohort cohort = _swapMembers(_memberToReplace, _newMember);
+-        emit MemberReplaced({
+-            replacedMember: _memberToReplace,
+-            newMember: _newMember,
+-            cohort: cohort
+-        });
+-    }
+ 
+-    /// @inheritdoc ISecurityCouncilManager
+-    function rotateMember(address _currentAddress, address _newAddress)
+-        external
+-        onlyRole(MEMBER_ROTATOR_ROLE)
+-    {
+-        Cohort cohort = _swapMembers(_currentAddress, _newAddress);
+-        emit MemberRotated({
+-            replacedAddress: _currentAddress,
+-            newAddress: _newAddress,
+-            cohort: cohort
+-        });
++        if(rotation) {
++            emit MemberRotated({
++                replacedAddress: _memberToReplace,
++                newAddress: _newMember,
++                cohort: cohort
++            });
++        } else {
++            emit MemberReplaced({
++                replacedMember: _memberToReplace,
++                newMember: _newMember,
++                cohort: cohort
++            });
++        }
+     }
+ 
+     function _swapMembers(address _addressToRemove, address _addressToAdd)
+```
