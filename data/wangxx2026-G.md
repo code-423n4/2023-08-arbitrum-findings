@@ -8,7 +8,7 @@ https://github.com/ArbitrumFoundation/governance/blob/c18de53820c505fc459f766c1b
 
 https://github.com/ArbitrumFoundation/governance/blob/c18de53820c505fc459f766c1b224810eaeaabc5/src/gov-action-contracts/AIPs/SecurityCouncilMgmt/SecurityCouncilMgmtUpgradeLib.sol#L52-L89
 
-The worst time complexity of the following code is O(N*N)
+The following implementation, the worst case time complexity is O(N*N), the best case time complexity is O(N)
 ``` solidity 
     function areAddressArraysEqual(address[] memory array1, address[] memory array2)
         public
@@ -36,7 +36,7 @@ The worst time complexity of the following code is O(N*N)
 }
 ```
 
-The worst time complexity of the following code is O(N)
+The following implementation, Time complexity is O(N)
 ``` solidity
     function areAddressArraysEqual(address[] memory array1, address[] memory array2)
         public
