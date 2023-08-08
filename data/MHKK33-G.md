@@ -1,4 +1,4 @@
-CACHED VARIABLE MUST BE USED FOR LOW GAS USAGE
+(1), CACHED VARIABLE MUST BE USED FOR LOW GAS USAGE
 
 https://github.com/ArbitrumFoundation/governance/blob/c18de53820c505fc459f766c1b224810eaeaabc5/src/security-council-mgmt/governors/modules/SecurityCouncilNomineeElectionGovernorCountingUpgradeable.sol#L98C10-L98C10
 
@@ -28,3 +28,27 @@ MODIFIED CODE:
             // push the contender to the nominees
             _addNominee(proposalId, contender);
         }
+
+(2), THE _elections ARRAY SHOULD BE KEPT IN A VARIABLE,
+
+https://github.com/ArbitrumFoundation/governance/blob/c18de53820c505fc459f766c1b224810eaeaabc5/src/security-council-mgmt/governors/modules/SecurityCouncilNomineeElectionGovernorCountingUpgradeable.sol#L143
+
+SUMMARY:
+   In the original function, the length of the nominees array was accessed directly from storage within the return statement. This means that each time the function was called, the length was accessed from storage, which could be gas-intensive.
+       In the modified function, the length of the nominees array is stored in a local variable numNominees before the return statement. This avoids repeatedly accessing storage and reduces gas consumption.
+
+ACTUAL CODE:
+ 
+       function nomineeCount(uint256 proposalId) public view returns (uint256) {
+        return _elections[proposalId].nominees.length;
+    }
+
+
+MODIFIED CODE:
+
+      function nomineeCount(uint256 proposalId) public view returns (uint256) {
+    NomineeElectionCountingInfo storage election = _elections[proposalId];
+    uint256 numNominees = election.nominees.length;
+    return numNominees;
+}
+
