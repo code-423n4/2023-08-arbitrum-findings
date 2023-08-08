@@ -1,0 +1,8 @@
+{
+  "contest": 273,
+  "handle": "Sabit",
+  "risk": "3",
+  "title": "initialize function doesn't check if members of the firstCohort are not in the secondCohort",
+  "issueId": 45,
+  "issueUrl": "https://github.com/code-423n4/2023-08-arbitrum-findings/issues/45"
+}
