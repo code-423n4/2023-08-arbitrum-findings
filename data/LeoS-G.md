@@ -2,10 +2,11 @@
 |        | Issue | Instances | Gas Saved |
 |--------|-------|-----------|-----------|
 |[G-01]|Use `calldata` instead of `memory`|4|-341 522|
-|[G-02]|Combine multiple for loop|2|-285 015|
-|[G-03]|Verify that two arrays are equal using hashs|1|-250 115|
-|[G-04]|Activating the  `--via-ir` with foundry|-|-19 932 210|
-|[G-05]|Set the number of optimizer runs individually|-|-|
+|[G-02]|The creation of an intermediary array can be avoided|1|-323 094|
+|[G-03]|Combine multiple for loop|2|-285 015|
+|[G-04]|Verify that two arrays are equal using hashs|1|-250 115|
+|[G-05]|Activating the  `--via-ir` with foundry|-|-19 932 210|
+|[G-06]|Set the number of optimizer runs individually|-|-|
 
 
 The gas saved column simply adds up the evolution in the snapshot, using the method described in the next section.
@@ -53,7 +54,53 @@ testAddMemberToFirstCohort() (gas: -3926 (-1.119%))
 Overall gas change: -341522 (-0.024%)
 ```
 
-## [G-02] Combine multiple for loop
+## [G-02] The creation of an intermediary array can be avoided
+Sometimes, it's not necessary to create an intermediate array to store  values.
+
+*1 instance*
+
+- [SecurityCouncilMgmtUtils.sol#L15-L36](https://github.com/arbitrumfoundation/governance/blob/c18de53820c505fc459f766c1b224810eaeaabc5/src/security-council-mgmt/SecurityCouncilMgmtUtils.sol#L15-L36)
+
+In this case, an array of maximum size is created because we don't yet know what size the final array will be. This is not useful, as it's more efficient to keep this maximum-size array, fill it and then reduce its size using assembly.
+
+The function can be changed like that:
+
+```diff
+function filterAddressesWithExcludeList(
+address[]  memory input,
+mapping(address => bool)  storage excludeList
+)  internal  view  returns  (address[]  memory)  {
+- /* */
++	address[]  memory output =  new  address[](input.length);
++	uint256 outputLength =  0;
++	for  (uint256 i =  0; i < input.length; i++)  {
++		if  (!excludeList[input[i]])  {
++			output[outputLength]  = input[i];
++			outputLength++;
++		}
++	}
++	assembly {
++		mstore(output, outputLength) //Set the appropriate size
++	}
++	return output;
+}
+```
+
+Applying this optimisation, those changes appear in the snapshot:
+
+```
+testE2E() (gas: -31712 (-0.038%))
+testSecurityCouncilManagerDeployment() (gas: -30294 (-0.101%))
+testNomineeElectionGovDeployment() (gas: -30294 (-0.101%))
+testRemovalGovDeployment() (gas: -30294 (-0.101%))
+testMemberElectionGovDeployment() (gas: -30294 (-0.101%))
+testOnlyOwnerCanDeploy() (gas: -30294 (-0.120%))
+testInvalidInit() (gas: -30293 (-0.433%))
+testTopNomineesGas() (gas: -109619 (-2.434%))
+Overall gas change: -323094 (-0.023%)
+```
+
+## [G-03] Combine multiple for loop
 Whenever possible, it's best to avoid running several for loops one after the other. Most of the time, they can be combined. This avoids certain initialization and counting operations. It's even more interesting when you can take advantage of values that have already been calculated (in this case, a sum of lengths).
 
 *2 instances*
@@ -147,7 +194,7 @@ testE2E() (gas: -52904 (-0.064%))
 Overall gas change: -53848 (-0.004%)
 ```
 
-## [G-03] Verify that two arrays are equal using hashs
+## [G-04] Verify that two arrays are equal using hashs
 
 The most efficient way to check that two arrays are equals is to use their hash, not to compare their elements one by one.
 
@@ -202,7 +249,7 @@ testE2E() (gas: -250115 (-0.301%))
 Overall gas change: -250115 (-0.017%)
 ```
 
-## [G-04] Activating the  `--via-ir` with foundry
+## [G-05] Activating the  `--via-ir` with foundry
 
 This option allows YUL optimization. It is currently in heavy development and will allow the biggest gain.  
 
@@ -438,9 +485,10 @@ Overall gas change: -19932210 (-1.389%)
 ```
 Not all tests have lower costs, so this change can be widely discussed.
 
-## Set the number of optimizer runs individually
+## [G-06] Set the number of optimizer runs individually
 Some development environments allow the number of optimizer runs to be defined individually for each contract. This is difficult to achieve in foundry. But hardhat is the best example. The main limitation to the number of runs in the case of contracts that will be heavily executed is the size of the deployment, which is limited. With foundry, a single contract completely blocks this number. Here, the maximum number is 1915 (set to 1900 in foundry) for the `SecurityCouncilNomineeElectionGovernor.sol` contract. By only setting this one to this value and greatly increase for the other, a huge saving can be achieved.
 
 We therefore suggest moving to a development/deployment environment where this option is available. No contract in scope expects the limit, even for 100,000 runs.
 
 This optimization certainly has the biggest impact, but as the tests are written with foundry, it's impossible to provide a benchmark in a short space of time.
+
