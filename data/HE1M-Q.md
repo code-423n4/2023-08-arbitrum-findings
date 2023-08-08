@@ -43,3 +43,18 @@ This shows that in case of equal weights, the index becomes important and effect
 
 During swapping member or rotating member, better to have a check that the address of new member is different from the address of the old member.
 https://github.com/ArbitrumFoundation/governance/blob/c18de53820c505fc459f766c1b224810eaeaabc5/src/security-council-mgmt/SecurityCouncilManager.sol#L218
+
+### Q4
+
+The governor should not be allowed to change the full weight duration during the voting period. This clearly shows that the governor can manipulate the votes outcome easily by changing the full weight duration when an election is ongoing.
+https://github.com/ArbitrumFoundation/governance/blob/c18de53820c505fc459f766c1b224810eaeaabc5/src/security-council-mgmt/governors/modules/SecurityCouncilMemberElectionGovernorCountingUpgradeable.sol#L77
+
+Let's the voting period is 14 days, and full weight duration is 5 days. So, users who cast vote during day 0 to 5, 100% of their votes will be calculated. But users who cast vote during day 5 to day 13, will have less weight linearly. If the governor, on day 10, set the full weight duration to 12, it means whoever that casts vote from day 10 to day 12, their full weight will be assigned. This is clearly unfair to those who did cast vote from day 5 to day 10, because the rule of voting is changed during the voting period.
+
+### Q5
+
+If governor set the full weight duration to zero, no votes will be counted during the election. It means, whoever casts vote, it will have weight equal to zero.
+https://github.com/ArbitrumFoundation/governance/blob/c18de53820c505fc459f766c1b224810eaeaabc5/src/security-council-mgmt/governors/modules/SecurityCouncilMemberElectionGovernorCountingUpgradeable.sol#L77
+https://github.com/ArbitrumFoundation/governance/blob/c18de53820c505fc459f766c1b224810eaeaabc5/src/security-council-mgmt/governors/modules/SecurityCouncilMemberElectionGovernorCountingUpgradeable.sol#L255
+
+A nonzero check is required to add to the function `setFullWeightDuration`.
