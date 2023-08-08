@@ -1,0 +1,8 @@
+{
+  "contest": 273,
+  "handle": "Daniel526",
+  "risk": "2",
+  "title": "Potential Precision Loss in Quorum Calculation of `ArbitrumGovernorVotesQuorumFractionUpgradeable` Contract",
+  "issueId": 38,
+  "issueUrl": "https://github.com/code-423n4/2023-08-arbitrum-findings/issues/38"
+}
