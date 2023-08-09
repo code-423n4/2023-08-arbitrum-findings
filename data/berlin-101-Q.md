@@ -53,3 +53,5 @@ Suggested implementation:
 # L-08 requireSafesEquivalent() function in SecurityCouncilMgmtUpgradeLib uses underscore prefix inconsistently for its arguments
 Safe2 parameter does not use underscore: https://github.com/ArbitrumFoundation/governance/blob/c18de53820c505fc459f766c1b224810eaeaabc5/src/gov-action-contracts/AIPs/SecurityCouncilMgmt/SecurityCouncilMgmtUpgradeLib.sol#L30-L32C35
 
+# L-09 Inconsistency in naming due to using "remover" and "removal" terminology at the same time
+Example: https://github.com/ArbitrumFoundation/governance/blob/c18de53820c505fc459f766c1b224810eaeaabc5/src/security-council-mgmt/factories/L2SecurityCouncilMgmtFactory.sol#L141. This should be harmonized. The suggestion is to use "remover".
