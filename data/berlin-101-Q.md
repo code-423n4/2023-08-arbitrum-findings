@@ -21,3 +21,6 @@ The "excludeNominee" function of "SecurityCouncilNomineeElectionGovernor.sol" en
 However, the "inludeNominee" function does not enforce it as there is no option to extend the vetting period implemented: https://github.com/ArbitrumFoundation/governance/blob/c18de53820c505fc459f766c1b224810eaeaabc5/src/security-council-mgmt/governors/SecurityCouncilNomineeElectionGovernor.sol#L290. So no additional nominees could be added to achieve the candidates after the vetting period ended. This may be implemented as expected.
 
 But if the vetter makes a mistake after the vetting period ended, no nominee added through failure could be removed and the added candidate could be voted for. It is unclear if this is intended. If so, the vetter must be trusted to not make mistakes.
+
+# L-04 createActionRouteDataWithDefaults() function in UpgradeExecRouteBuilder is only used in tests
+The createActionRouteDataWithDefaults() function within UpgradeExecRouteBuilder.sol (https://github.com/ArbitrumFoundation/governance/blob/c18de53820c505fc459f766c1b224810eaeaabc5/src/UpgradeExecRouteBuilder.sol#L186) is only used in tests. It should be removed from the contract and moved into the test folder.
