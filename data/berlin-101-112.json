@@ -1,0 +1,8 @@
+{
+  "contest": 273,
+  "handle": "berlin-101",
+  "risk": "2",
+  "title": "SecurityCouncilMemberRemovalGovernor does not 100% implement the constitution for _voteSucceeded function",
+  "issueId": 112,
+  "issueUrl": "https://github.com/code-423n4/2023-08-arbitrum-findings/issues/112"
+}
