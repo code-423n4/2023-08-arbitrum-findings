@@ -1,0 +1,8 @@
+{
+  "contest": 273,
+  "handle": "LinKenji",
+  "risk": "3",
+  "title": "Potential Duplicate Security Council Addition Vulnerability in `_addSecurityCouncil`.",
+  "issueId": 104,
+  "issueUrl": "https://github.com/code-423n4/2023-08-arbitrum-findings/issues/104"
+}
