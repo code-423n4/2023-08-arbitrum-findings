@@ -1,105 +1,185 @@
+# LOW FINDINGS
 
-Division by zero not prevented
-The divisions below take an input parameter which does not have any zero-value checks, which may lead to the functions reverting when zero is passed.
+##
 
-Lack of integer validation 
+## [L-1] ``generateSalt()`` function is not secure 
 
-use latest version of openzheplin 
+### Impact
+ Even if the ``updateNonce``  value is increased every time a new proposal is scheduled, the ``generateSalt ``function is still not a secure function. This is because the ``generateSalt`` function simply concatenates the ``newMembers`` array and the ``updateNonce`` variable together to create a salt. This salt is not very secure, and it is possible for an attacker to generate a collision and create a valid proposal with the same salt as another proposal
 
-Hard coded fees structure 
+### POC
+```solidity
 
-[L‑04]	Missing contract-existence checks before low-level calls
+440: salt: this.generateSalt(newMembers, updateNonce),
 
-Low-level calls return success if there is no code present at the specified address. In addition to the zero-address checks, add a check to verify that <address>.code.length > 0
+370: function generateSalt(address[] memory _members, uint256 nonce)
+371:        external
+372:        pure
+373:        returns (bytes32)
+374:    {
+375:        return keccak256(abi.encodePacked(_members, nonce));
+376:    }
 
-444              (success[i], result[i]) = mc[i].call(data[i]);
+```
+https://github.com/ArbitrumFoundation/governance/blob/c18de53820c505fc459f766c1b224810eaeaabc5/src/security-council-mgmt/SecurityCouncilManager.sol#L440
 
-module.delegatecall(
-175              abi.encodeWithSelector(
-176                  this.exerciseInternal.selector,
-177                  optionsData.from,
-178                  optionsData.oTAPTokenID,
-179:                 optionsData.paymentToken,
+### Recommended Mitigation
+To make the generateSalt function more secure, you could use a more secure hash function, such as the ``sha3 ``function
 
-[L‑05]	External call recipient may consume all transaction gas	12
-There is no limit specified on the amount of gas used, so the recipient can use up all of the transaction's gas, causing it to revert. Use addr.call{gas: <amount>}("") or this library instead.
+##
 
-/// @audit `executeMarketFn()`
-444:             (success[i], result[i]) = mc[i].call(data[i]);
+## [L-] Division by zero not prevented
 
-## Multiplication before division
+### Impact
+The divisions below take an input parameter which does not have any zero-value checks, which may lead to the functions reverting when zero is passed. ``params.quorumNumeratorValue`` should be checked before division operation
 
-State variables not capped at reasonable values
-Consider adding minimum/maximum value checks to ensure that the state variables below can never be used to excessively harm users, including via griefing
+### POC
+```solidity
+FILE: governance/src/security-council-mgmt/governors/SecurityCouncilNomineeElectionGovernor.sol
 
-Allowed fees/rates should be capped by smart contracts
-Fees/rates should be required to be below 100%, preferably at a much lower limit, to ensure users don't have to monitor the blockchain for changes prior to using the protocol
+128: if ((quorumDenominator() / params.quorumNumeratorValue) > 500) {
 
-There are 2 instances of this issue:
+```
+https://github.com/ArbitrumFoundation/governance/blob/c18de53820c505fc459f766c1b224810eaeaabc5/src/security-council-mgmt/governors/SecurityCouncilNomineeElectionGovernor.sol#L128
 
-File: contracts/Penrose.sol
+```solidity
+FILE: Breadcrumbsgovernance/src/security-council-mgmt/governors/modules
+/SecurityCouncilMemberElectionGovernorCountingUpgradeable.sol
 
-256      function setBigBangEthMarketDebtRate(uint256 _rate) external onlyOwner {
-257          bigBangEthDebtRate = _rate;
-258          emit BigBangEthMarketDebtRate(_rate);
-259:     }
+252: uint256 decreaseAmount =
+253:            votes * (blockNumber - fullWeightVotingDeadline_) / decreasingWeightDuration;
 
-[L‑12] Solidity version 0.8.20 may not work on other chains due to PUSH0
-
-The compiler for Solidity 0.8.20 switches the default target EVM version to Shanghai, which includes the new PUSH0 op code. This op code may not yet be implemented on all L2s, so deployment on these chains will fail. To work around this issue, use an earlier EVM version. While the project itself may or may not compile with 0.8.20, other projects with which it integrates, or which extend this project may, and those projects will have problems deploying these contracts/libraries.
-
-File: contracts/Penrose.sol
-
-2:   pragma solidity ^0.8.18;
-
-Array lengths not checked
-If the length of the arrays are not required to be of the same length, user operations may not be fully executed due to a mismatch in the number of items iterated over, versus the number of items provided in the second array
-
-Empty receive()/payable fallback() function does not authorize requests
-If the intention is for the Ether to be used, the function should call another function, otherwise it should revert (e.g. require(msg.sender == address(weth))). Having no access control on the function means that someone may send Ether to the contract, and have no way to get anything back out, which is a loss of funds. If the concern is having to spend a small amount of gas to check the sender against an immutable address, the code should at least have a function to rescue unused Ether.
-
-Signature use at deadlines should be allowed
-According to EIP-2612, signatures used on exactly the deadline timestamp are supposed to be allowed. While the signature may or may not be used for the exact EIP-2612 use case (transfer approvals), for consistency's sake, all deadlines should follow this semantic. If the timestamp is an expiration rather than a deadline, consider whether it makes more sense to include the expiration timestamp as a valid timestamp, as is done for deadlines.
-
-There are 3 instances of this issue:
-
-File: contracts/governance/twTAP.sol
-
-159:         if (participant.expiry < block.timestamp) {
-https://github.com/code-423n4/2023-07-tapioca/blob/e6eef060495b31173578570215e80f9e95330b9a/tap-token-audit/contracts/governance/twTAP.sol#L159-L159
-
-File: contracts/option-airdrop/AirdropBroker.sol
-
-158:         require(aoTapOption.expiry > block.timestamp, "adb: Option expired");
-
-233:         require(aoTapOption.expiry > block.timestamp, "adb: Option expired");
-https://github.com/code-423n4/2023-07-tapioca/blob/e6eef060495b31173578570215e80f9e95330b9a/tap-token-audit/contracts/option-airdrop/AirdropBroker.sol#L158-L158
-
-Open TODOs
-Code architecture, incentives, and error handling/reporting questions/issues should be resolved before deployment
-
-There are 10 instances of this issue:
-
-File: tap-token-audit/contracts/governance/twTAP.sol
-
-233:              //    (TODO: Word better?)
-
-289:                  // TODO: Strongly suspect this is never less. Prove it.
-
-347:          // TODO: Mint event?
-
-398:          // TODO: Make whole function unchecked
-
-411:              // TODO: Prove that math is safe
-
-444:          // TODO: Word this better
-
-Constructor should be disableInitializer() when contract is upgradable 
-
-Check that authorizeUpgrade() is properly secured if UUPS
+```
+https://github.com/ArbitrumFoundation/governance/blob/c18de53820c505fc459f766c1b224810eaeaabc5/src/security-council-mgmt/governors/modules/SecurityCouncilMemberElectionGovernorCountingUpgradeable.sol#L252-L253
 
 
+### Recommended Mitigation
+Add the ``non zero check`` before perform division 
 
+##
+
+## [L-] Lack of sanity checks when assigning ``uint`` values to critical variables in ``constructor`` and ``initializer`` function
+
+### Impact
+The contract's does not have any sanity checks when assigning ``uint`` values to critical variables in the ``constructor`` and ``initializer`` function. This could lead to human errors that would require the contract to be redeployed.
+
+### POC
+
+```solidity
+FILE: governance/src/gov-action-contracts/AIPs/SecurityCouncilMgmt/GovernanceChainSCMgmtActivationAction.sol
+
+41: emergencySecurityCouncilThreshold = _emergencySecurityCouncilThreshold;
+42: nonEmergencySecurityCouncilThreshold = _nonEmergencySecurityCouncilThreshold;
+
+```
+https://github.com/ArbitrumFoundation/governance/blob/c18de53820c505fc459f766c1b224810eaeaabc5/src/gov-action-contracts/AIPs/SecurityCouncilMgmt/GovernanceChainSCMgmtActivationAction.sol#L41-L42
+
+https://github.com/ArbitrumFoundation/governance/blob/c18de53820c505fc459f766c1b224810eaeaabc5/src/security-council-mgmt/governors/SecurityCouncilMemberRemovalGovernor.sol#L63-L75
+
+
+### Recommended Mitigation
+Add ``> 0``, ``MAX``, ``MIN`` value checks 
+
+
+##
+
+## [L-] ``Protocol`` uses the ``vulnerable`` version of ``openzeppelin version``
+
+### Impact
+The Protocol contract uses the ``vulnerable`` version of the ``openzeppelin`` library. This means that the contract is susceptible to a number of security vulnerabilities that have been patched in newer versions of the library.
+
+Protocol uses the contracts": "4.7.3", contracts-upgradeable": "4.7.3"  there are known vulnerability in this version 
+
+  - Improper Input Validation
+  - Missing Authorization
+  - Denial of Service (DoS)
+  - Improper Verification of Cryptographic Signature
+
+### POC
+```solidity
+FILE: package.json
+
+69: "@openzeppelin/contracts": "4.7.3",
+70: "@openzeppelin/contracts-upgradeable": "4.7.3",
+
+```
+
+### Recommended Mitigation
+Use at least ``openzeppelin : 4.9.2 ``
+
+##
+
+## [L-] Hardcoded ``MAX_SECURITY_COUNCILS`` may cause problem in future 
+
+### Impact
+The ``MAX_SECURITY_COUNCILS`` constant in the Protocol contract is hardcoded to a value of ``500``. This means that there can only be a maximum of 500 security councils in the protocol. This could be a problem in the future if the protocol needs to support more than 10 security councils.
+
+If any problem need to ``increase/decrease`` ``security councils`` means its not possible. Need to redeploy the over all contract 
+
+### POC
+
+```solidity
+FILE: governance/src/security-council-mgmt/SecurityCouncilManager.sol
+
+67: uint256 public immutable MAX_SECURITY_COUNCILS = 500;
+
+```
+https://github.com/ArbitrumFoundation/governance/blob/c18de53820c505fc459f766c1b224810eaeaabc5/src/security-council-mgmt/SecurityCouncilManager.sol#L67
+
+### Recommended Mitigation
+Make ``MAX_SECURITY_COUNCILS`` value configurable 
+
+##
+
+## [L-] Project Upgrade and Stop Scenario should be
+
+At the start of the project, the system may need to be stopped or upgraded, I suggest you have a script beforehand and add it to the documentation. This can also be called an ” EMERGENCY STOP (CIRCUIT BREAKER) PATTERN “.
+
+https://github.com/maxwoe/solidity_patterns/blob/master/security/EmergencyStop.sol
+
+##
+
+
+
+
+
+
+## [L-] Expressions for constant values such as a call to ``keccak256()``, should use ``immutable`` rather than ``constant``
+
+### Impact
+
+While it doesn’t save any gas because the compiler knows that developers often make this mistake, it’s still best to use the right tool for the task at hand. There is a difference between constant variables and immutable variables, and they should each be used in their appropriate contexts. constants should be used for literal values written into the code, and immutable variables should be used for expressions, or values calculated in, or passed into the constructor.
+
+```solidity
+FILE: Breadcrumbsgovernance/src/security-council-mgmt/SecurityCouncilManager.sol
+
+79:    bytes32 public constant COHORT_REPLACER_ROLE = keccak256("COHORT_REPLACER");
+80:    bytes32 public constant MEMBER_ADDER_ROLE = keccak256("MEMBER_ADDER");
+81:    bytes32 public constant MEMBER_REPLACER_ROLE = keccak256("MEMBER_REPLACER");
+82:    bytes32 public constant MEMBER_ROTATOR_ROLE = keccak256("MEMBER_ROTATOR");
+83:    bytes32 public constant MEMBER_REMOVER_ROLE = keccak256("MEMBER_REMOVER");
+
+```
+https://github.com/ArbitrumFoundation/governance/blob/c18de53820c505fc459f766c1b224810eaeaabc5/src/security-council-mgmt/SecurityCouncilManager.sol#L79-L83
+
+### Recommended Mitigation
+Use immutable instead of constant 
+
+##
+
+## [L-] Shorter the inheritance list 
+
+https://github.com/ArbitrumFoundation/governance/blob/c18de53820c505fc459f766c1b224810eaeaabc5/src/security-council-mgmt/governors/SecurityCouncilNomineeElectionGovernor.sol#L16-L27
+
+##
+
+## [L-] initialize() function visibility should be ``external ``
+
+https://github.com/ArbitrumFoundation/governance/blob/c18de53820c505fc459f766c1b224810eaeaabc5/src/security-council-mgmt/governors/SecurityCouncilMemberRemovalGovernor.sol#L58-L69
+
+https://github.com/ArbitrumFoundation/governance/blob/c18de53820c505fc459f766c1b224810eaeaabc5/src/security-council-mgmt/governors/SecurityCouncilMemberElectionGovernor.sol#L55
+
+https://github.com/ArbitrumFoundation/governance/blob/c18de53820c505fc459f766c1b224810eaeaabc5/src/security-council-mgmt/governors/SecurityCouncilNomineeElectionGovernor.sol#L103
 
 
 
