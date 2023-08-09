@@ -1,0 +1,8 @@
+{
+  "contest": 273,
+  "handle": "caventa",
+  "risk": "2",
+  "title": "SecurityCouncilMemberElectionGovernorCountingUpgradeable contract Initalizer can bypass strict fullWeightDuration validation",
+  "issueId": 99,
+  "issueUrl": "https://github.com/code-423n4/2023-08-arbitrum-findings/issues/99"
+}
