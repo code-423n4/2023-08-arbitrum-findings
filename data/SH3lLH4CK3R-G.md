@@ -1,6 +1,6 @@
 #Gas Optimisation
 
-## L2SecurityCouncilMgmtFactory.sol line 111, Use the pre-increment operator `++i` instead of the post-increment operator `i++` in for loop to savs gas 
+## L2SecurityCouncilMgmtFactory.sol line 111, Use the pre-increment operator `++i` instead of the post-increment operator `i++` in for loop to save gas 
 
 for (uint256 i = 0; i < dp.firstCohort.length; i++) {
             if (!govChainEmergencySCSafe.isOwner(dp.firstCohort[i])) {
