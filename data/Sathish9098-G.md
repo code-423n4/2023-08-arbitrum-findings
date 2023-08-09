@@ -84,6 +84,42 @@ FILE: governance/src/security-council-mgmt/factories/L2SecurityCouncilMgmtFactor
 If variables occupying the same slot are both written the same function or by the constructor, avoids a separate Gsset (20000 gas). Reads of the variables can also be cheaper.
 
 
+### ``cohortSize`` can be changed uint96 from uint256. ``cohortSize`` saves only ``_firstCohort.length `` _firstCohort parameter length. The array length is not going to exceeds uint96 range ``18446744073709551615``
+: Saves ``2000 GAS, 1 SLOT``
+
+
+https://github.com/ArbitrumFoundation/governance/blob/c18de53820c505fc459f766c1b224810eaeaabc5/src/security-council-mgmt/SecurityCouncilManager.sol#L55-L73
+
+```diff
+FILE: Breadcrumbsgovernance/src/security-council-mgmt/SecurityCouncilManager.sol
+
+
+ /// @notice Address of the l2 timelock used by core governance
+    address payable public l2CoreGovTimelock;
++   uint96 public cohortSize;
+
+    /// @notice The list of Security Councils under management. Any changes to the cohorts in this manager
+    ///         will be pushed to each of these security councils, ensuring that they all stay in sync
+    SecurityCouncilData[] public securityCouncils;
+
+    /// @notice Address of UpgradeExecRouteBuilder. Used to help create security council updates
+    UpgradeExecRouteBuilder public router;
+
+    /// @notice Maximum possible number of Security Councils to manage
+    /// @dev    Since the councils array will be iterated this provides a safety check to make too many Sec Councils
+    ///         aren't added to the array.
+    uint256 public immutable MAX_SECURITY_COUNCILS = 500;
+
+    /// @notice Nonce to ensure that scheduled updates create unique entries in the timelocks
+    uint256 public updateNonce;
+
+    /// @notice Size of cohort under ordinary circumstancces
+-    uint256 public cohortSize;
+
+
+```
+
+
 
 Cache function calls instead of calling repeat 
 
