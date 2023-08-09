@@ -61,7 +61,8 @@ Encountered a total of 1 failing tests, 0 tests succeeded
 ```
 
 ## Recommendations
-implement a check for max size and cohort member zero addresses upon initialiasation
+Implement a check for max size and cohort member zero addresses upon initialiasation. If the cohort max size isn't required, this can be changed to a pure function saving further gas in the process.
+
 ```
 function cohortMaxZ(address[] memory _firstC, address[] memory _secondC) internal view returns(bool) {
         bool pass = true;
