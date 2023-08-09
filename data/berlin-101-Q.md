@@ -31,7 +31,7 @@ https://github.com/ArbitrumFoundation/governance/blob/c18de53820c505fc459f766c1b
 # L-06 Inconsistency in naming between TIMELOCK_PROPOSAL_ROLE and PROPOSER_ROLE
 This becomes apparent for example here: https://github.com/ArbitrumFoundation/governance/blob/c18de53820c505fc459f766c1b224810eaeaabc5/src/gov-action-contracts/AIPs/SecurityCouncilMgmt/GovernanceChainSCMgmtActivationAction.sol#L69. "TIMELOCK_PROPOSER_ROLE" should be used instead. For "TIMELOCK_CANCELLER_ROLE" this is done consistently: https://github.com/ArbitrumFoundation/governance/blob/c18de53820c505fc459f766c1b224810eaeaabc5/src/gov-action-contracts/AIPs/SecurityCouncilMgmt/GovernanceChainSCMgmtActivationAction.sol#L70.
 
-# L-06 "_removeMemberFromCohortArray" function of SecurityCouncilManager.sol could have been written cleaner: _removeMemberFromCohortArray
+# L-07 "_removeMemberFromCohortArray" function of SecurityCouncilManager.sol could have been written cleaner: _removeMemberFromCohortArray
 
 Suggested implementation:
 ```Solidity
@@ -50,5 +50,6 @@ Suggested implementation:
     revert NotAMember(_member);
 }
 ```
-
+# L-08 requireSafesEquivalent() function in SecurityCouncilMgmtUpgradeLib uses underscore prefix inconsistently for its arguments
+Safe2 parameter does not use underscore: https://github.com/ArbitrumFoundation/governance/blob/c18de53820c505fc459f766c1b224810eaeaabc5/src/gov-action-contracts/AIPs/SecurityCouncilMgmt/SecurityCouncilMgmtUpgradeLib.sol#L30-L32C35
 
