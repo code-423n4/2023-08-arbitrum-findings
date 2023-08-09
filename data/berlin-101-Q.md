@@ -31,4 +31,24 @@ https://github.com/ArbitrumFoundation/governance/blob/c18de53820c505fc459f766c1b
 # L-06 Inconsistency in naming between TIMELOCK_PROPOSAL_ROLE and PROPOSER_ROLE
 This becomes apparent for example here: https://github.com/ArbitrumFoundation/governance/blob/c18de53820c505fc459f766c1b224810eaeaabc5/src/gov-action-contracts/AIPs/SecurityCouncilMgmt/GovernanceChainSCMgmtActivationAction.sol#L69. "TIMELOCK_PROPOSER_ROLE" should be used instead. For "TIMELOCK_CANCELLER_ROLE" this is done consistently: https://github.com/ArbitrumFoundation/governance/blob/c18de53820c505fc459f766c1b224810eaeaabc5/src/gov-action-contracts/AIPs/SecurityCouncilMgmt/GovernanceChainSCMgmtActivationAction.sol#L70.
 
+# L-06 "_removeMemberFromCohortArray" function of SecurityCouncilManager.sol could have been written cleaner: _removeMemberFromCohortArray
+
+Suggested implementation:
+```Solidity
+
+ function _removeMemberFromCohortArray(address _member) internal returns (Cohort) {
+    for (uint256 i = 0; i < Cohort.SECOND; i++) {
+        address[] storage cohort = i == Cohort.FIRST ? firstCohort : secondCohort;
+        for (uint256 j = 0; j < cohort.length; j++) {
+            if (_member == cohort[j]) {
+                cohort[j] = cohort[cohort.length - 1];
+                cohort.pop();
+                return Cohort(i);
+            }
+        }
+    }
+    revert NotAMember(_member);
+}
+```
+
 
