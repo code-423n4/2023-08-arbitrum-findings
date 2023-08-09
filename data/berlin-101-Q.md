@@ -55,3 +55,7 @@ Safe2 parameter does not use underscore: https://github.com/ArbitrumFoundation/g
 
 # L-09 Inconsistency in naming due to using "remover" and "removal" terminology at the same time
 Example: https://github.com/ArbitrumFoundation/governance/blob/c18de53820c505fc459f766c1b224810eaeaabc5/src/security-council-mgmt/factories/L2SecurityCouncilMgmtFactory.sol#L141. This should be harmonized. The suggestion is to use "remover".
+
+# L-10 A more compact syntax for errors can be used in some places where error take only 1 parameter
+Several examples of this can be found in SecurityCouncilManager.sol:
+https://github.com/ArbitrumFoundation/governance/blob/security-council-mgmt--base/src/security-council-mgmt/SecurityCouncilManager.sol#L113, https://github.com/ArbitrumFoundation/governance/blob/security-council-mgmt--base/src/security-council-mgmt/SecurityCouncilManager.sol#L149, https://github.com/ArbitrumFoundation/governance/blob/security-council-mgmt--base/src/security-council-mgmt/SecurityCouncilManager.sol#L172, https://github.com/ArbitrumFoundation/governance/blob/security-council-mgmt--base/src/security-council-mgmt/SecurityCouncilManager.sol#L319, 
