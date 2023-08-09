@@ -24,3 +24,11 @@ But if the vetter makes a mistake after the vetting period ended, no nominee add
 
 # L-04 createActionRouteDataWithDefaults() function in UpgradeExecRouteBuilder is only used in tests
 The createActionRouteDataWithDefaults() function within UpgradeExecRouteBuilder.sol (https://github.com/ArbitrumFoundation/governance/blob/c18de53820c505fc459f766c1b224810eaeaabc5/src/UpgradeExecRouteBuilder.sol#L186) is only used in tests. It should be removed from the contract and moved into the test folder.
+
+# L-05 "schedValues" variable should be called "schedActions" instead in UpgradeExecRouteBuilder.sol
+https://github.com/ArbitrumFoundation/governance/blob/c18de53820c505fc459f766c1b224810eaeaabc5/src/UpgradeExecRouteBuilder.sol#L124
+
+# L-06 Inconsistency in naming between TIMELOCK_PROPOSAL_ROLE and PROPOSER_ROLE
+This becomes apparent for example here: https://github.com/ArbitrumFoundation/governance/blob/c18de53820c505fc459f766c1b224810eaeaabc5/src/gov-action-contracts/AIPs/SecurityCouncilMgmt/GovernanceChainSCMgmtActivationAction.sol#L69. "TIMELOCK_PROPOSER_ROLE" should be used instead. For "TIMELOCK_CANCELLER_ROLE" this is done consistently: https://github.com/ArbitrumFoundation/governance/blob/c18de53820c505fc459f766c1b224810eaeaabc5/src/gov-action-contracts/AIPs/SecurityCouncilMgmt/GovernanceChainSCMgmtActivationAction.sol#L70.
+
+
