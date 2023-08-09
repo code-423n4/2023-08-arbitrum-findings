@@ -1,0 +1,8 @@
+{
+  "contest": 273,
+  "handle": "kodyvim",
+  "risk": "3",
+  "title": "Malicious user could block future update to a security council by setting _nonce to type(uint256).max",
+  "issueId": 73,
+  "issueUrl": "https://github.com/code-423n4/2023-08-arbitrum-findings/issues/73"
+}
