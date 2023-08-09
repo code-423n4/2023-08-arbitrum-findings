@@ -1,0 +1,8 @@
+{
+  "contest": 273,
+  "handle": "nobody2018",
+  "risk": "2",
+  "title": "SecurityCouncilNomineeElectionGovernor.includeNominee should check whether the account is from outgoing members of the cohort",
+  "issueId": 107,
+  "issueUrl": "https://github.com/code-423n4/2023-08-arbitrum-findings/issues/107"
+}
