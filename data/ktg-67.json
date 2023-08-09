@@ -1,0 +1,8 @@
+{
+  "contest": 273,
+  "handle": "ktg",
+  "risk": "2",
+  "title": "SecurityCouncilNomineeElectionGovernor.includeNominee will fail with excluded nominee",
+  "issueId": 67,
+  "issueUrl": "https://github.com/code-423n4/2023-08-arbitrum-findings/issues/67"
+}
