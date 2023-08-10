@@ -1,0 +1,8 @@
+{
+  "contest": 273,
+  "handle": "0xbepresent",
+  "risk": "2",
+  "title": "The `removeMember()` function does not maintain a certain threshold that helps to ensure the perform of Emergency/Non-Emergency actions",
+  "issueId": 195,
+  "issueUrl": "https://github.com/code-423n4/2023-08-arbitrum-findings/issues/195"
+}
