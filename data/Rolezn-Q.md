@@ -3,21 +3,21 @@
 ### Low Risk Issues
 | |Issue|Contexts|
 |-|:-|:-:|
-| [LOW&#x2011;1](#LOW-QA&#x2011;8) | Remove unused code | 1 |
-| [LOW&#x2011;2](#LOW-QA&#x2011;12) | Upgrade OpenZeppelin Contract Dependency | 2 |
-| [LOW&#x2011;3](#LOW-QA&#x2011;14) | Use SafeCast to safely downcast variables | 4 |
+| [LOW&#x2011;1](#LOW-QA&#x2011;1) | Remove unused code | 1 |
+| [LOW&#x2011;2](#LOW-QA&#x2011;2) | Upgrade OpenZeppelin Contract Dependency | 2 |
+| [LOW&#x2011;3](#LOW-QA&#x2011;3) | Use SafeCast to safely downcast variables | 4 |
 
 Total: 7 contexts over 3 issues
 
 ### Non-critical Issues
 | |Issue|Contexts|
 |-|:-|:-:|
-| [NC&#x2011;1](#NC-QA&#x2011;4) | Condition will not revert when `block.timestamp` is `==` to the compared variable | 1 |
-| [NC&#x2011;2](#NC-QA&#x2011;7) | Consistent usage of require vs custom error | 24 |
-| [NC&#x2011;3](#NC-QA&#x2011;21) | Functions that alter state should emit events | 1 |
-| [NC&#x2011;4](#NC-QA&#x2011;25) | Generate perfect code headers for better solidity code layout and readability | 3 |
-| [NC&#x2011;5](#NC-QA&#x2011;46) | `override` function arguments that are unused should have the variable name removed or commented out to avoid compiler warnings | 8 |
-| [NC&#x2011;6](#NC-QA&#x2011;59) | Zero as a function argument should have a descriptive meaning | 17 |
+| [NC&#x2011;1](#NC-QA&#x2011;1) | Condition will not revert when `block.timestamp` is `==` to the compared variable | 1 |
+| [NC&#x2011;2](#NC-QA&#x2011;2) | Consistent usage of require vs custom error | 24 |
+| [NC&#x2011;3](#NC-QA&#x2011;3) | Functions that alter state should emit events | 1 |
+| [NC&#x2011;4](#NC-QA&#x2011;4) | Generate perfect code headers for better solidity code layout and readability | 3 |
+| [NC&#x2011;5](#NC-QA&#x2011;5) | `override` function arguments that are unused should have the variable name removed or commented out to avoid compiler warnings | 8 |
+| [NC&#x2011;6](#NC-QA&#x2011;6) | Zero as a function argument should have a descriptive meaning | 17 |
 
 Total: 54 contexts over 6 issues
 
