@@ -37,7 +37,7 @@ Suggested implementation:
 ```Solidity
 
  function _removeMemberFromCohortArray(address _member) internal returns (Cohort) {
-    for (uint256 i = 0; i < Cohort.SECOND; i++) {
+    for (uint256 i = 0; i <= Cohort.SECOND; i++) {
         address[] storage cohort = i == Cohort.FIRST ? firstCohort : secondCohort;
         for (uint256 j = 0; j < cohort.length; j++) {
             if (_member == cohort[j]) {
