@@ -40,3 +40,37 @@ The decreasing calculation is implemented as follow:
    return _downCast(votes - decreaseAmount);
 ```
 The functions calculates `decreaseAmount` and then subtract that from original `votes`. However, since this is the integer division, it may end up = 0 if `votes * (blockNumber - fullWeightVotingDeadline_` < `decreasingWeightDuration`. A malicious user can vote with a small amount and get around this.
+
+### L-03: `SecurityCouncilNomineeElectionGovernor.sol`.includeNominee should check if address != address(0)
+https://github.com/ArbitrumFoundation/governance/blob/c18de53820c505fc459f766c1b224810eaeaabc5/src/security-council-mgmt/governors/SecurityCouncilNomineeElectionGovernor.sol#L290-#L317
+```solidity
+function includeNominee(uint256 proposalId, address account) external onlyNomineeVetter {
+        ProposalState state_ = state(proposalId);
+        if (state_ != ProposalState.Succeeded) {
+            revert ProposalNotSucceededState(state_);
+        }
+
+        if (isNominee(proposalId, account)) {
+            revert NomineeAlreadyAdded(account);
+        }
+
+        uint256 cnCount = compliantNomineeCount(proposalId);
+        uint256 cohortSize = securityCouncilManager.cohortSize();
+        if (cnCount >= cohortSize) {
+            revert CompliantNomineeTargetHit(cnCount, cohortSize);
+        }
+
+        // can't include nominees from the other cohort (the cohort not currently up for election)
+        // this only checks against the current the current other cohort, and against the current cohort membership
+        // in the security council, so changes to those will mean this check will be inconsistent.
+        // this check then is only a relevant check when the elections are running as expected - one at a time,
+        // every 6 months. Updates to the sec council manager using methods other than replaceCohort can effect this check
+        // and it's expected that the entity making those updates understands this.
+        if (securityCouncilManager.cohortIncludes(otherCohort(), account)) {
+            revert AccountInOtherCohort(otherCohort(), account);
+        }
+
+        _addNominee(proposalId, account);
+    }
+```
+Function `includeNominee` allows nomineeVetter to add an account to nominee list of the current list length < cohort size. However, it doesn't check if `account` is a valid address != address(0). If this happens, when the proposal is passed to `SecurityCouncilMemberElectionGovernor` and executed, `SecurityCouncilManager` will not accept this address and reverts, blocking subsequent elections.
