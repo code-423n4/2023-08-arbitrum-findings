@@ -14,6 +14,12 @@ Consider emitting the `SecurityCouncilRemoved` event before the array undergoes 
 
 https://github.com/arbitrumfoundation/governance/blob/c18de53820c505fc459f766c1b224810eaeaabc5/src/security-council-mgmt/SecurityCouncilManager.sol#L296-L300
 
+## [Info] Redundant check
+
+A similar zero address check is already performed within the `_addMemberToCohortArray()` for the `_addressToAdd` parameter. So the additional check for `_addressToAdd` is unnecessary.
+
+https://github.com/ArbitrumFoundation/governance/blob/c18de53820c505fc459f766c1b224810eaeaabc5/src/security-council-mgmt/SecurityCouncilManager.sol#L222
+
 ## [Info] Repetition in Comments
 
 > // this only checks against ~~the current~~ the current other cohort, and against the current cohort membership
