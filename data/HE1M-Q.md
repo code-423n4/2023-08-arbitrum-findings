@@ -75,3 +75,7 @@ Or it was better to have a pending mode between the time the nominee election is
 Suppose the member A should be removed for any reason. So, 9/12 is required to remove member A. Let's say, 3 members are from the same organization, and decides to support member A, so they will refuse to cast vote in favor of removal of member A. For sure, member A will not cast vote in favor of removal of himself. So, there will be 4 votes not in favor of removal of member A. So, only 8/12 are in favor. As a result, member A can not be removed through the security council, and it should be done only through DAO that takes time.
 
 It was better to reduce the threshold to 8/12 or make the 3-from-the-same-organizaion more strict and reduce it to 2.
+
+### Q8
+
+If any important update is scheduled to the protocol, it is better to put the protocol in idle mode or limit the amount of deposit into the protocol. Because, if an user is not aware of such update, and he deposits into the protocol, and then the update is executed, he will experience an immediate unexpected behavior.
