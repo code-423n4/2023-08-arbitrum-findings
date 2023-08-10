@@ -62,3 +62,10 @@ https://github.com/ArbitrumFoundation/governance/blob/security-council-mgmt--bas
 
 # L-11 VoteType enum could have been used consistently for encoding support instead of mixing it with integers
 There is a mix of using VoteType and integers to indicate the "support" of votes. For example here the VoteType enum is used: https://github.com/ArbitrumFoundation/governance/blob/security-council-mgmt--base/src/security-council-mgmt/governors/SecurityCouncilMemberRemovalGovernor.sol#L170. Here an integer is used: https://github.com/ArbitrumFoundation/governance/blob/c18de53820c505fc459f766c1b224810eaeaabc5/src/security-council-mgmt/governors/modules/SecurityCouncilMemberElectionGovernorCountingUpgradeable.sol#L102. Using the enum consistently is preferable.
+
+# L-12 If vetter accidentally excluded a nominee it cannot be added again for the election
+Via the "excludeNominee" function in SecurityCouncilNomineeElectionGovernor.sol a nominee can be excluded by a vetter.
+
+But because this function blacklists the nominee's address via "election.isExcluded[nominee] = true;" (https://github.com/ArbitrumFoundation/governance/blob/c18de53820c505fc459f766c1b224810eaeaabc5/src/security-council-mgmt/governors/SecurityCouncilNomineeElectionGovernor.sol#L279) the vetter cannot revert this by using the "includeNominee" function as it does not reset this entry (https://github.com/ArbitrumFoundation/governance/blob/c18de53820c505fc459f766c1b224810eaeaabc5/src/security-council-mgmt/governors/SecurityCouncilNomineeElectionGovernor.sol#L290).
+
+If the implementation should be robust to cover for vetter mistakes, resetting the "election.isExcluded" state of the nominee address (and decreasing the election.excludedNomineeCount) should be implemented within the "includeNominee" function.
