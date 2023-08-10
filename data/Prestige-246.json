@@ -1,0 +1,8 @@
+{
+  "contest": 273,
+  "handle": "Prestige",
+  "risk": "2",
+  "title": "Missing validation to ensure that the _l2CoreGovTimelock parameter is not the zero address in the initialize function",
+  "issueId": 246,
+  "issueUrl": "https://github.com/code-423n4/2023-08-arbitrum-findings/issues/246"
+}
