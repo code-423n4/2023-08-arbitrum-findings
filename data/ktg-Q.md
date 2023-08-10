@@ -91,3 +91,38 @@ function upExecLocationExists(uint256 _chainId) public view returns (bool) {
 }
 ```
 This variable `upExecLocations` is only updated at initialization and no functions to update it after that; therefore, the protocol cannot add new security council with chainId different than what's initialized.
+
+### L-05: SecurityCouncilManager.generateSalt could produce the same salt, leading to collisions
+The function `generateSalt` is currently implemented as follow:
+```solidity
+    function generateSalt(address[] memory _members, uint256 nonce)
+        external
+        pure
+        returns (bytes32)
+    {
+        return keccak256(abi.encodePacked(_members, nonce));
+    }
+```
+The function uses encodePacked. In solidity, `encode` uses padding while `encodePacked` does not, this could lead to collisions and `replay` protections is broken, as this `salt` is used to create date to send  to Arbitrum timelock:
+```solidity
+function getScheduleUpdateInnerData(uint256 nonce)
+        public
+        view
+        returns (address[] memory, address, bytes memory)
+{
+...
+ // unique salt used for replay protection in the L1 timelock
+        bytes32 salt = this.generateSalt(newMembers, nonce);
+        (address to, bytes memory data) = router.createActionRouteData(
+            chainIds,
+            actionAddresses,
+            new uint256[](securityCouncils.length), // all values are always 0
+            actionDatas,
+            0,
+            salt
+        );
+
+        return (newMembers, to, data);
+...
+}
+```
