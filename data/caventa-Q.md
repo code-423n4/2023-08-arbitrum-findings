@@ -85,3 +85,54 @@ function createElection() external returns (uint256 proposalId) {
         electionCount++;
     }
 ```
+
+3. 
+
+It is possible to have same weight for 2 nominees. If two addresses have the same weight, the one that appears earlier in the nominees array will be selected.
+
+```soldiity
+ function selectTopNominees(address[] memory nominees, uint240[] memory weights, uint256 k)
+        public
+        pure
+        returns (address[] memory)
+    {
+        if (nominees.length != weights.length) {
+            revert LengthsDontMatch(nominees.length, weights.length);
+        }
+        if (nominees.length < k) {
+            revert NotEnoughNominees(nominees.length, k);
+        }
+
+        uint256[] memory topNomineesPacked = new uint256[](k);
+
+        for (uint16 i = 0; i < nominees.length; i++) {
+            uint256 packed = (uint256(weights[i]) << 16) | i;
+
+            if (topNomineesPacked[0] < packed) {
+                topNomineesPacked[0] = packed;
+                LibSort.insertionSort(topNomineesPacked);
+            }
+        }
+
+        address[] memory topNomineesAddresses = new address[](k);
+        for (uint16 i = 0; i < k; i++) {
+            topNomineesAddresses[i] = nominees[uint16(topNomineesPacked[i])];
+        }
+
+        return topNomineesAddresses;
+    }
+```
+
+Let's say k = 6
+
+A gets 200 (Selected)
+B gets 180 (Selected)
+C gets 160 (Selected)
+D gets 140 (Selected)
+E gets 130 (Selected)
+F gets 120 (Selected)
+G gets 120 (Not get selected)
+
+F and G have the same weight, yet G won't get selected because he was added later than F. 
+
+There are some solution would fix this. One of them is to request NomineeElectionGovernor to determine who gets elected manually if this situation happened.
