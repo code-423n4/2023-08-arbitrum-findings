@@ -57,3 +57,9 @@ A nonzero check is required to add to the function `setFullWeightDuration`.
 Voters can nor remove their votes to a contender. For example, during voting period, an user casts vote to a contender. Later, the user notices that this contender is not good fit. But, the user can not unvote to this contender as there is no such mechanism. 
 
 Please note that having such mechanism leads to another attack possibility that a malicious user casts vote to a contender until the last moment (so the contender qualifies for the nominee position, and the next votes to this contender will not be counted), then before the voting ends, the malicious user unvotes to the contender.
+
+### Q6
+
+There is no mechanism that a contender/governor be able to cancel contender-ship. 
+Attack scenario:
+For example, some very well-known address adds himself as a contender (but the foundation knows beforehand that these contenders will not pass the compliance check). Since, they are very well-known, they attract many votes, so that other contenders will not have enough votes left to qualify for nominee position. After, the election, these contenders will be excluded by the nomineeVetter (as they do not pass the compliance check). The issue is that the number of contenders passing the nominee-threshold (0.2%) is very low, because the well-known contenders had attracted all the available votes.
