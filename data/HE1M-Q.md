@@ -51,3 +51,9 @@ https://github.com/ArbitrumFoundation/governance/blob/c18de53820c505fc459f766c1b
 https://github.com/ArbitrumFoundation/governance/blob/c18de53820c505fc459f766c1b224810eaeaabc5/src/security-council-mgmt/governors/modules/SecurityCouncilMemberElectionGovernorCountingUpgradeable.sol#L255
 
 A nonzero check is required to add to the function `setFullWeightDuration`.
+
+### Q5
+
+Voters can nor remove their votes to a contender. For example, during voting period, an user casts vote to a contender. Later, the user notices that this contender is not good fit. But, the user can not unvote to this contender as there is no such mechanism. 
+
+Please note that having such mechanism leads to another attack possibility that a malicious user casts vote to a contender until the last moment (so the contender qualifies for the nominee position, and the next votes to this contender will not be counted), then before the voting ends, the malicious user unvotes to the contender.
