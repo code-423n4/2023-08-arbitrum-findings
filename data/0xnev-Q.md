@@ -85,12 +85,71 @@ While it is acknowledged in test file `SecurityCouncilNomineeElectionGovernor.t.
 ## Impact
 [SecurityCouncilNomineeElectionGovernor.sol#L290-L317](https://github.com/arbitrumfoundation/governance/blob/c18de53820c505fc459f766c1b224810eaeaabc5/src/security-council-mgmt/governors/SecurityCouncilNomineeElectionGovernor.sol#L290-L317)
 
+```solidity
+function includeNominee(uint256 proposalId, address account) external onlyNomineeVetter {
+    ProposalState state_ = state(proposalId);
+    if (state_ != ProposalState.Succeeded) {
+        revert ProposalNotSucceededState(state_);
+    }
+
+    if (isNominee(proposalId, account)) {
+        revert NomineeAlreadyAdded(account);
+    }
+
+    uint256 cnCount = compliantNomineeCount(proposalId);
+    uint256 cohortSize = securityCouncilManager.cohortSize();
+    if (cnCount >= cohortSize) {
+        revert CompliantNomineeTargetHit(cnCount, cohortSize);
+    }
+
+    // can't include nominees from the other cohort (the cohort not currently up for election)
+    // this only checks against the current the current other cohort, and against the current cohort membership
+    // in the security council, so changes to those will mean this check will be inconsistent.
+    // this check then is only a relevant check when the elections are running as expected - one at a time,
+    // every 6 months. Updates to the sec council manager using methods other than replaceCohort can effect this check
+    // and it's expected that the entity making those updates understands this.
+    if (securityCouncilManager.cohortIncludes(otherCohort(), account)) {
+        revert AccountInOtherCohort(otherCohort(), account);
+    }
+
+    _addNominee(proposalId, account);
+}
+```
 Based on consitution, nominee vetter can only add member of the outgoing security council randomly selected as evident by the code comments and docs:
 
 > In the event that fewer than six candidates are supported by pledged votes representing at least 0.2% of all Votable Tokens, the current Security Council members whose seats are up for election may become candidates (as randomly selected out of their Cohort) until there are 6 candidates.
 
 
 While nominee vetter is a trusted role and additional nominee added still need to undergo standard governance voting procedure, an additional check could be made to track the current cohort members to ensure that the nominee added to supplement insufficient cohort must be from the current cohort which adheres to the constitution rules. It also prevents malicious nominee vetters from adding other nominees.
+
+## Proof of Concept
+Add the following test in `SecurityCouncilNomineeElectionGovernor.t.sol` and run `forge test --match-test testIncludeNomineeNotFromCurrentCohort`
+```solidity
+function testIncludeNomineeNotFromCurrentCohort() public {
+    // Create nominee election proposal
+    uint256 proposalId = _propose();
+
+    // According to ARB constitution, following call to includeNominee
+    // should fail if nominee to add is not part of current cohort but passes
+    _mockCohortIncludes(Cohort.SECOND, _contender(1), false);
+    _mockCohortIncludes(Cohort.FIRST, _contender(1), false);
+    vm.prank(_contender(1));
+    governor.addContender(proposalId);
+    vm.roll(governor.proposalVettingDeadline(proposalId) + 1);
+    vm.prank(initParams.nomineeVetter);
+    governor.includeNominee(proposalId, _contender(1)); 
+
+    // Check state
+    assertEq(governor.isNominee(proposalId, _contender(1)), true);
+}
+```
+Output:
+```solidity
+Running 1 test for test/security-council-mgmt/governors/SecurityCouncilNomineeElectionGovernor.t.sol:SecurityCouncilNomineeElectionGovernorTest
+[PASS] testIncludeNomineeNotFromCurrentCohort() (gas: 252877)
+Test result: ok. 1 passed; 0 failed; 0 skipped; finished in 1.76ms
+Ran 1 test suites: 1 tests passed, 0 failed, 0 skipped (1 total tests)
+```
 
 
 ## Recommendation
@@ -147,3 +206,7 @@ Consider adding a queuing period and vetoer role before execution as a fail-safe
 [SecurityCouncilManager.sol#L161-L173](https://github.com/arbitrumfoundation/governance/blob/c18de53820c505fc459f766c1b224810eaeaabc5/src/security-council-mgmt/SecurityCouncilManager.sol#L161-L173)
 
 Since a member cannot be in both cohorts at the same time, use the enum flag `Cohort` to indicate in `removeMember()`, `replaceMember()` and `rotateMember()` in which cohort the member will be removed via `_removeMemberFromCohortArray()` instead of looping through both cohorts.
+
+
+***
+Consider not allowing removing of member when he is currently put up for election
