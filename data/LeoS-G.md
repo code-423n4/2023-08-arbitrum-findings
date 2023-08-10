@@ -1,10 +1,11 @@
+
 # Summary
 |        | Issue | Instances | Gas Saved |
 |--------|-------|-----------|-----------|
 |[G-01]|Use `calldata` instead of `memory`|4|-341 522|
 |[G-02]|The creation of an intermediary array can be avoided|1|-323 094|
 |[G-03]|Combine multiple for loop|2|-285 015|
-|[G-04]|Verify that two arrays are equal using hashs|1|-250 115|
+|[G-04]|Optimize array comparison|1|-136 722|
 |[G-05]|Activating the  `--via-ir` with foundry|-|-19 932 210|
 |[G-06]|Set the number of optimizer runs individually|-|-|
 
@@ -194,9 +195,10 @@ testE2E() (gas: -52904 (-0.064%))
 Overall gas change: -53848 (-0.004%)
 ```
 
-## [G-04] Verify that two arrays are equal using hashs
+## [G-04] Optimize array comparison
 
-The most efficient way to check that two arrays are equals is to use their hash, not to compare their elements one by one.
+The following function is not well optimized. First of all, there's no need to check the array twice. This alone reduces the cost by half.
+
 
 *1 instance*
 
@@ -211,18 +213,18 @@ function areAddressArraysEqual(address[] memory array1, address[] memory array2)
 	if (array1.length != array2.length) {
 		return false;
 	} 
--	 for (uint256 i = 0; i < array1.length; i++) {  
--		 bool found = false;  
--		 for (uint256 j = 0; j < array2.length; j++) {  
--			 if (array1[i] == array2[j]) {  
--				 found = true;  
--				 break;  
--			 }  
--		 }  
--		 if (!found) {  
--			 return false;  
--		 }  
--	 } 
+	 for (uint256 i = 0; i < array1.length; i++) {  
+		 bool found = false;  
+		 for (uint256 j = 0; j < array2.length; j++) {  
+			 if (array1[i] == array2[j]) {  
+				 found = true;  
+				 break;  
+			 }  
+		 }  
+		 if (!found) {  
+			 return false;  
+		 }  
+	 } 
 -	 for (uint256 i = 0; i < array2.length; i++) {  
 -		 bool found = false;  
 -		 for (uint256 j = 0; j < array1.length; j++) {  
@@ -235,19 +237,31 @@ function areAddressArraysEqual(address[] memory array1, address[] memory array2)
 -			 return false;  
 -		 } 
 -	 } 
--	 return true; 
+	 return true; 
+```
+
+Applying this optimisation, those changes appear in the snapshot:
+
+```
+testE2E() (gas: -136722 (-0.164%))
+Overall gas change: -136722 (-0.010%)
+```
+
+But at this point the function is not yet perfectly optimized. it has a complexity of O(n^2). This can be increased by hashing the arrays, but the elements must be ordered. For this, quicksort is the best algorythm (this is obviously not recalled) (address can be compared by converting them to uint160).
+```diff
+function areAddressArraysEqual(address[] memory array1, address[] memory array2){
+-    /* */
++  	 quicksort(array1);
++        quicksort(array2);
 +	 bytes32 hash1 = keccak256(abi.encode(array1));  
 +	 bytes32 hash2 = keccak256(abi.encode(array2));
 +	 return hash1 == hash2; 
 + }
 ```
 
-Applying this optimisation, those changes appear in the snapshot:
+In this way, the function would have a theoretical complexity of O(n log n). But in reality this will be more expensive for small arrays than the first alternative. Another way would be to introduce a hash table to compare elements more efficiently without looping (only one array need to be hashed), but this is again uneconomical on small arrays.
+That's why only a benchmark for the simplest optimization is provided. On tests, the other two worsen costs. But it's useful to know that they exist and could be implemented if this function were to become more important.
 
-```
-testE2E() (gas: -250115 (-0.301%))
-Overall gas change: -250115 (-0.017%)
-```
 
 ## [G-05] Activating the  `--via-ir` with foundry
 
@@ -491,4 +505,3 @@ Some development environments allow the number of optimizer runs to be defined i
 We therefore suggest moving to a development/deployment environment where this option is available. No contract in scope expects the limit, even for 100,000 runs.
 
 This optimization certainly has the biggest impact, but as the tests are written with foundry, it's impossible to provide a benchmark in a short space of time.
-
