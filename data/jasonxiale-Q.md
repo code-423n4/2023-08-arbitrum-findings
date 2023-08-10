@@ -17,4 +17,3 @@ I think it better to use a distinguished method to get `block.number`, for examp
     }
 ```
 
-# 
