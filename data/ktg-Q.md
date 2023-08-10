@@ -74,3 +74,20 @@ function includeNominee(uint256 proposalId, address account) external onlyNomine
     }
 ```
 Function `includeNominee` allows nomineeVetter to add an account to nominee list of the current list length < cohort size. However, it doesn't check if `account` is a valid address != address(0). If this happens, when the proposal is passed to `SecurityCouncilMemberElectionGovernor` and executed, `SecurityCouncilManager` will not accept this address and reverts, blocking subsequent elections.
+
+### L-04: There is no way to update `upExecLocations` in contract `UpgradeExecRouteBuilder`
+The variable `upExecLocations` is of type `mapping(uint256 => UpExecLocation)`, it decides which chainId is valid for adding security council member in `SecurityConcilManager`:
+```solidity
+function _addSecurityCouncil(SecurityCouncilData memory _securityCouncilData) internal {
+        ...
+        if (!router.upExecLocationExists(_securityCouncilData.chainId)) {
+            revert SecurityCouncilNotInRouter(_securityCouncilData);
+        }
+        ...
+}
+
+function upExecLocationExists(uint256 _chainId) public view returns (bool) {
+        return upExecLocations[_chainId].upgradeExecutor != address(0);
+}
+```
+This variable `upExecLocations` is only updated at initialization and no functions to update it after that; therefore, the protocol cannot add new security council with chainId different than what's initialized.
