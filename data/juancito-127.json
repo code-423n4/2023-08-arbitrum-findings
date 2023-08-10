@@ -1,0 +1,8 @@
+{
+  "contest": 273,
+  "handle": "juancito",
+  "risk": "3",
+  "title": "Governor `relay()` functions can be used to bypass voting an directly run critical `SecurityCouncilManager` functions",
+  "issueId": 127,
+  "issueUrl": "https://github.com/code-423n4/2023-08-arbitrum-findings/issues/127"
+}
