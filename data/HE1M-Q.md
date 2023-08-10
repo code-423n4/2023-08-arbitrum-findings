@@ -79,3 +79,42 @@ It was better to reduce the threshold to 8/12 or make the 3-from-the-same-organi
 ### Q8
 
 If any important update is scheduled to the protocol, it is better to put the protocol in idle mode or limit the amount of deposit into the protocol. Because, if an user is not aware of such update, and he deposits into the protocol, and then the update is executed, he will experience an immediate unexpected behavior.
+
+### Q9
+
+During member election, the votes lose their weights based on the amount of delay from the voting start time. If userA provide the signature of the vote to userB through off-chain, then userB can cast userA's vote by calling `castVoteWithReasonAndParamsBySig`. 
+https://github.com/OpenZeppelin/openzeppelin-contracts-upgradeable/blob/3d4c0d5741b131c231e558d7a6213392ab3672a5/contracts/governance/GovernorUpgradeable.sol#L521C14-L521C46
+If userB, casts userA's votes late, then userA's vote will lose its weight. Maybe it was better that userA signs the message and includes the time that his votes are valid to be casted. After that time, userA's votes will invalid:
+```
+function castVoteWithReasonAndParamsBySig(
+        uint256 proposalId,
+        uint8 support,
+        string calldata reason,
+        bytes memory params,
+        uint256 validity,
+        uint8 v,
+        bytes32 r,
+        bytes32 s
+    ) public virtual override returns (uint256) {
+        require(validity >= block.timestamp, "too late to cast vote");
+        address voter = ECDSAUpgradeable.recover(
+            _hashTypedDataV4(
+                keccak256(
+                    abi.encode(
+                        EXTENDED_BALLOT_TYPEHASH,
+                        proposalId,
+                        support,
+                        keccak256(bytes(reason)),
+                        keccak256(params),
+                        validity
+                    )
+                )
+            ),
+            v,
+            r,
+            s
+        );
+
+        return _castVote(proposalId, voter, support, reason, params);
+    }
+```
