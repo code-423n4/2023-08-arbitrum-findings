@@ -1,0 +1,8 @@
+{
+  "contest": 273,
+  "handle": "MiloTruck",
+  "risk": "2",
+  "title": "`getPastCirculatingSupply()` returns the ARB token supply instead of circulating votes supply",
+  "issueId": 256,
+  "issueUrl": "https://github.com/code-423n4/2023-08-arbitrum-findings/issues/256"
+}
