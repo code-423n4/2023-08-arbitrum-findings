@@ -69,3 +69,20 @@ Via the "excludeNominee" function in SecurityCouncilNomineeElectionGovernor.sol 
 But because this function blacklists the nominee's address via "election.isExcluded[nominee] = true;" (https://github.com/ArbitrumFoundation/governance/blob/c18de53820c505fc459f766c1b224810eaeaabc5/src/security-council-mgmt/governors/SecurityCouncilNomineeElectionGovernor.sol#L279) the vetter cannot revert this by using the "includeNominee" function as it does not reset this entry (https://github.com/ArbitrumFoundation/governance/blob/c18de53820c505fc459f766c1b224810eaeaabc5/src/security-council-mgmt/governors/SecurityCouncilNomineeElectionGovernor.sol#L290).
 
 If the implementation should be robust to cover for vetter mistakes, resetting the "election.isExcluded" state of the nominee address (and decreasing the election.excludedNomineeCount) should be implemented within the "includeNominee" function.
+
+# L-13 Inconsitent way of defining "totalUsedVotes" and "weightReceived" in emitted VoteCastForNominee in SecurityCouncilMemberElectionGovernorCountingUpgradeable.sol
+
+See: https://github.com/ArbitrumFoundation/governance/blob/c18de53820c505fc459f766c1b224810eaeaabc5/src/security-council-mgmt/governors/modules/SecurityCouncilMemberElectionGovernorCountingUpgradeable.sol#L136-L138
+
+For "totalUsedVotes" the following is used:
+```Solidity
+totalUsedVotes: prevVotesUsed + votes
+```
+For "weightReceived" the following is used:
+```Solidity
+weightReceived: election.weightReceived[nominee]
+```
+which could have been the following to be consistent:
+```Solidity
+weightReceived: prevWeightReceived + weight
+```
