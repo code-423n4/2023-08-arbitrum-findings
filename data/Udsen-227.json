@@ -1,0 +1,8 @@
+{
+  "contest": 273,
+  "handle": "Udsen",
+  "risk": "3",
+  "title": "PROPOSAL DEADLINE IS NOT CHECKED DURING VOTE CASTING IN `_countVote` FUNCTION",
+  "issueId": 227,
+  "issueUrl": "https://github.com/code-423n4/2023-08-arbitrum-findings/issues/227"
+}
