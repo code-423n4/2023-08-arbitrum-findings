@@ -1,0 +1,8 @@
+{
+  "contest": 273,
+  "handle": "Udsen",
+  "risk": "3",
+  "title": "`_removeMemberFromCohortArray` FUNCTION REDUCES THE `cohort` ARRAY LENGTH BY ONE THUS `DoS` THE `addMember` FUNCTIONALITY",
+  "issueId": 222,
+  "issueUrl": "https://github.com/code-423n4/2023-08-arbitrum-findings/issues/222"
+}
