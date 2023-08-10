@@ -7,3 +7,6 @@ https://github.com/ArbitrumFoundation/governance/blob/c18de53820c505fc459f766c1b
 
 There should also be an event emit for '_castVote' function under the SecurityCouncilMemberRemovalGovernor contract
 https://github.com/ArbitrumFoundation/governance/blob/c18de53820c505fc459f766c1b224810eaeaabc5/src/security-council-mgmt/governors/SecurityCouncilMemberRemovalGovernor.sol#L223
+
+There should be an event emit for '_countVote' function under the SecurityCouncilMemberRemovalGovernor contract
+ https://github.com/ArbitrumFoundation/governance/blob/c18de53820c505fc459f766c1b224810eaeaabc5/src/security-council-mgmt/governors/SecurityCouncilMemberRemovalGovernor.sol#L163
