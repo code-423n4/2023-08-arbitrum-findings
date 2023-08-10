@@ -136,3 +136,29 @@ G gets 120 (Not get selected)
 F and G have the same weight, yet G won't get selected because he was added later than F. 
 
 There are some solution would fix this. One of them is to request NomineeElectionGovernor to determine who gets elected manually if this situation happened.
+
+4.
+
+```solidity
+if (VoteType(support) == VoteType.Abstain) {
+  revert AbstainDisallowed();
+}
+```
+
+can be removed from SecurityCouncilMemberRemovalGovernor#_countVote because the vote can never be abstain
+
+See
+
+```solidity
+  function COUNTING_MODE()
+        public
+        pure
+        virtual
+        override(GovernorCountingSimpleUpgradeable, IGovernorUpgradeable)
+        returns (string memory)
+    {
+        return "support=for,against&quorum=for";
+    }
+```
+
+where the counting mode support for and against votes only
