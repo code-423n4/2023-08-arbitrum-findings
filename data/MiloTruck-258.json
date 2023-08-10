@@ -1,0 +1,8 @@
+{
+  "contest": 273,
+  "handle": "MiloTruck",
+  "risk": "2",
+  "title": "`setFullWeightDuration()` can be called while a member election is ongoing",
+  "issueId": 258,
+  "issueUrl": "https://github.com/code-423n4/2023-08-arbitrum-findings/issues/258"
+}
