@@ -1,0 +1,8 @@
+{
+  "contest": 273,
+  "handle": "caventa",
+  "risk": "2",
+  "title": "Wrong votes value is used to check if there is InsufficientTokens when prevVotesReceived + votes >= votesThreshold",
+  "issueId": 136,
+  "issueUrl": "https://github.com/code-423n4/2023-08-arbitrum-findings/issues/136"
+}
