@@ -1,0 +1,8 @@
+{
+  "contest": 273,
+  "handle": "0xbepresent",
+  "risk": "2",
+  "title": "The `startBlock` number should not be considered as a zero vote weight",
+  "issueId": 188,
+  "issueUrl": "https://github.com/code-423n4/2023-08-arbitrum-findings/issues/188"
+}
