@@ -1,0 +1,8 @@
+{
+  "contest": 273,
+  "handle": "Bughunter101",
+  "risk": "2",
+  "title": "There is a frontrun vulnerability in `SecurityCouncilNomineeElectionGovernor.createElection()` function",
+  "issueId": 143,
+  "issueUrl": "https://github.com/code-423n4/2023-08-arbitrum-findings/issues/143"
+}
