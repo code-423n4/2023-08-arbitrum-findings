@@ -67,3 +67,5 @@ Attack scenario:
 For example, some very well-known address adds himself as a contender (but the foundation knows beforehand that these contenders will not pass the compliance check). Since, they are very well-known, they attract many votes, so that other contenders will not have enough votes left to qualify for nominee position. After, the election, these contenders will be excluded by the nomineeVetter (as they do not pass the compliance check). The issue is that the number of contenders passing the nominee-threshold (0.2%) is very low, because the well-known contenders had attracted all the available votes.
 
 It is better that governor be able to remove a contender even during voting period. Also, a contender should be able to remove himself.
+
+Or it was better to have a pending mode between the time the nominee election is created and the time the voting starts. During this pending mode, all the contenders should be added, and the nomineeVetter should check their compliance. 
