@@ -10,7 +10,7 @@ All gas optimizations is calculated based on opcodes
 | [G-4]  | IF’s/require() statements that check input arguments should be at the top of the function   | 5   | 10000   |
 | [G-5]  | Don't emit state variable when stack variable available  | 1  | 100   |
 | [G-6]  | Using bools for storage incurs overhead  | 3   | 60000  |
-| [G-7]  | Structs can be packed into fewer storage slots   | 2   | 4000  |
+| [G-7]  | Structs can be packed into fewer storage slots   | 2   | 4000 |
 
 
 ##
