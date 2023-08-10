@@ -1,0 +1,8 @@
+{
+  "contest": 273,
+  "handle": "jaraxxus",
+  "risk": "2",
+  "title": "If the length of owners in the safe array is too large, may experience out of gas revert",
+  "issueId": 245,
+  "issueUrl": "https://github.com/code-423n4/2023-08-arbitrum-findings/issues/245"
+}
