@@ -61,3 +61,9 @@ The following implementation, Time complexity is O(N)
 }
 
 ```
+
+## If the deletion is the last element, no element exchange is required
+
+https://github.com/ArbitrumFoundation/governance/blob/c18de53820c505fc459f766c1b224810eaeaabc5/src/security-council-mgmt/SecurityCouncilManager.sol#L279-L305
+
+https://github.com/ArbitrumFoundation/governance/blob/c18de53820c505fc459f766c1b224810eaeaabc5/src/security-council-mgmt/SecurityCouncilManager.sol#L161-L173
