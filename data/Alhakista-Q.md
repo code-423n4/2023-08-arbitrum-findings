@@ -4,3 +4,6 @@ https://github.com/ArbitrumFoundation/governance/blob/c18de53820c505fc459f766c1b
 
 Also, there should be an event emit for top nominee selection in the SecurityCouncilMemberElectionGovernorCountingUpgradeable contract.
 https://github.com/ArbitrumFoundation/governance/blob/c18de53820c505fc459f766c1b224810eaeaabc5/src/security-council-mgmt/governors/modules/SecurityCouncilMemberElectionGovernorCountingUpgradeable.sol#L177
+
+There should also be an event emit for '_castVote' function under the SecurityCouncilMemberRemovalGovernor contract
+https://github.com/ArbitrumFoundation/governance/blob/c18de53820c505fc459f766c1b224810eaeaabc5/src/security-council-mgmt/governors/SecurityCouncilMemberRemovalGovernor.sol#L223
