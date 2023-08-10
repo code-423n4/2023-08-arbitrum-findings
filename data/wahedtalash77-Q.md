@@ -9,10 +9,11 @@
 | \[N-03\] Generate perfect code headers every time |
 | \[N-04\] Use SMTChecker |
 | \[N-05\] NatSpec comments should be increased in |
+| \[N-06\] Use a single file for all system-wide constants |
 | \[S-01\] You can explain the operation of critical functions in NatSpec with an infographic. |
 
+* * *
 
-*** 
 ## \[L-01\] Use Ownable2StepUpgradeable instead of OwnableUpgradeable contract
 
 ```
@@ -145,6 +146,8 @@ I recommend using header for Solidity code layout and readability
 
 The highest tier of smart contract behavior assurance is formal mathematical verification. All assertions that are made are guaranteed to be true across all inputs → The quality of your asserts is the quality of your verification.
 
+https://twitter.com/0xOwenThurm/status/1614359896350425088?t=dbG9gHFigBX85Rv29lOjIQ&s=19
+
 ## \[N-05\] NatSpec comments should be increased in contracts
 
 > all contest
@@ -153,5 +156,14 @@ It is recommended that Solidity contracts are fully annotated using NatSpec for 
 
 in complext project such as Defi, the interpretation of all functions and their arguments and returns is important for code readability and auditability.
 https://docs.soliditylang.org/en/v0.8.15/natspec-format.html
+
+## \[N-06\] Use a single file for all system-wide constants
+
+There are many addresses and constants used in the system. It is recommended to put the most used ones in one file (for example constants.sol, use inheritance to access these values).
+
+This will help with readability and easier maintenance for future changes. This also helps with any issues, as some of these hard-coded values are admin addresses.
+
+constants.sol
+Use and import this file in contracts that require access to these values. This is just a suggestion, in some use cases this may result in higher gas usage in the distribution.
 
 ## \[S-01\] You can explain the operation of critical functions in NatSpec with an infographic.
